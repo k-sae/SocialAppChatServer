@@ -1,6 +1,7 @@
 package ChatServer;
 
 import SocialAppGeneral.Command;
+import SocialAppGeneral.Message;
 import SocialAppGeneral.ReceiveCommand;
 
 import java.net.Socket;
@@ -16,6 +17,9 @@ class ReceiveClientCommand extends ReceiveCommand {
 
     @Override
     public void Analyze(Command command) {
-
+        if (command.getKeyWord().equals(Message.SEND_MESSAGE))
+        {
+            ClientConnection.sendMessage(Message.FromJson(command.getObjectStr()));
+        }
     }
 }

@@ -18,7 +18,7 @@ public abstract class GeneralServer implements Connection {
         this.clientSocket = clientSocket;
         sendVerificationCode();
         new Thread(() -> {
-            setId();
+            loggedUserID = getId();
             startConnection();
         }).start();
 
@@ -37,18 +37,32 @@ public abstract class GeneralServer implements Connection {
     public String getLoggedUserID() {
         return loggedUserID;
     }
-    private void setId() {
+    protected String getId() {
         try {
             DataInputStream dataInputStream = new DataInputStream(clientSocket.getInputStream());
-            Command command = Command.fromString( dataInputStream.readUTF());
-            if (command != null)
-            {
-               loggedUserID = command.getObjectStr();
-
-            }
+            return dataInputStream.readUTF();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return "";
+    }
+    public void sendCommand(Command command) {
+        try {
+            DataOutputStream dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+            dataOutputStream.writeUTF(command.toString());
+        } catch (
+                IOException e)
+        {
+            //For debugging
+            System.out.println("send Data\t" + e.getMessage());
+        } catch (
+                Exception e)
+        {
+            //TODO
+            //Export to Log
+            System.out.println("E: send Data\t" + e.getMessage());
+        }
+
     }
 }
