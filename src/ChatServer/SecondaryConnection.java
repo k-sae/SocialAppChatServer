@@ -16,13 +16,16 @@ class SecondaryConnection extends GeneralServer {
      private static ArrayList<SecondaryConnection> secondaryConnections;
     public SecondaryConnection(Socket clientSocket) {
         super(clientSocket);
+        if (secondaryConnections ==null)
         secondaryConnections = new ArrayList<SecondaryConnection>();
+
     }
 
     @Override
     public void startConnection() {
         secondaryConnections.add(this);
-        sendChatHistory();
+        new Thread(this::sendChatHistory).start();
+
     }
     public void sendCommand(Command command)
     {
@@ -39,5 +42,21 @@ class SecondaryConnection extends GeneralServer {
         command.setKeyWord(Message.FETCH_MESSAGES);
         command.setSharableObject(ServerManager.fetchMessages(getLoggedUserID()));
         sendCommand(command);
+    }
+    public static void sendNotification(String senderId, String ReceiverId)
+    {
+        Command command  = new Command();
+        command.setKeyWord(Message.NEW_NOTIFICATION);
+        new Thread(() -> {
+            for (SecondaryConnection secondaryConnection: secondaryConnections
+                    ) {
+                if (secondaryConnection.getLoggedUserID().equals(ReceiverId))
+                {
+                    command.setSharableObject(senderId);
+                    secondaryConnection.sendCommand(command);
+                }
+            }
+        }).start();
+
     }
 }

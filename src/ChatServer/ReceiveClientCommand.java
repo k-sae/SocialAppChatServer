@@ -19,7 +19,9 @@ class ReceiveClientCommand extends ReceiveCommand {
     public void Analyze(Command command) {
         if (command.getKeyWord().equals(Message.SEND_MESSAGE))
         {
-            ClientConnection.sendMessage(Message.FromJson(command.getObjectStr()));
+            Message message = Message.FromJson(command.getObjectStr());
+            ClientConnection.sendMessage(message);
+            SecondaryConnection.sendNotification(message.getSender(), message.getReceiver());
         }
     }
 }

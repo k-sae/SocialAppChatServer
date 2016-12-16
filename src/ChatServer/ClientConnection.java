@@ -49,12 +49,9 @@ class ClientConnection extends GeneralServer
 //                .forEach(clientConnection -> clientConnection
 //                        .sendCommand(command)))
 //                .start();
-            for (ClientConnection clientConnection : clientConnections
-                    ) {
-                if (message.getReceiver().equals(clientConnection.getLoggedUserID()) && message.getSender().equals(clientConnection.receiverId)) {
-                    clientConnection.sendCommand(command);
-                }
-            }
+            clientConnections.stream().filter(clientConnection -> message.getReceiver().equals(clientConnection.getLoggedUserID()) && message.getSender().equals(clientConnection.receiverId)).forEach(clientConnection -> {
+                clientConnection.sendCommand(command);
+            });
         }).start();
     }
 
