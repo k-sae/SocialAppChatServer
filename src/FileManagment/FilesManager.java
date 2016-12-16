@@ -91,7 +91,7 @@ public class FilesManager {
     }
 
     //belal
-    public static Boolean AddLine(String FileName, String text) {
+    public static synchronized Boolean AddLine(String FileName, String text) {
         try {
             BufferedWriter WT = new BufferedWriter(new FileWriter(FileName,true));
             WT.write(text);

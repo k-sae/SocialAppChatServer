@@ -2,7 +2,6 @@ package ChatServer;
 
 import SocialAppGeneral.Command;
 import SocialAppGeneral.Message;
-import SocialAppGeneral.SocialArrayList;
 import SocialServer.GeneralServer;
 
 import java.net.Socket;
@@ -24,15 +23,14 @@ class ClientConnection extends GeneralServer
     @Override
     public void startConnection() {
         receiverId = getId();
-        new ReceiveClientCommand(clientSocket).start();
-        System.out.println(receiverId+":"+getLoggedUserID());
-        Command command = new Command();
-        command.setKeyWord(Message.FETCH_MESSAGES);
-        SocialArrayList socialArrayList = new SocialArrayList();
-        Message message = new Message();message.setMessage("hello"); message.setSender("4");
-        socialArrayList.getItems().add(message.convertToJsonString());
-        command.setSharableObject(socialArrayList.convertToJsonString());
-        sendCommand(command);
+        ReceiveClientCommand receiveClientCommand = new ReceiveClientCommand(clientSocket){
+            @Override
+            public void onUserDisconnection() {
+                clientConnections.remove(ClientConnection.this);
+            }
+        };
+        receiveClientCommand.start();
+        sendCommand(ServerManager.loadMessages(receiverId, getLoggedUserID()));
         //Send last Messages from here
         clientConnections.add(ClientConnection.this);
     }
@@ -41,18 +39,9 @@ class ClientConnection extends GeneralServer
         Command command = new Command();
         command.setKeyWord(Message.RECEIVE_MESSAGE);
         command.setSharableObject(message);
-        new Thread(() -> {
-//                clientConnections.stream()
-//                .filter(clientConnection ->(
-//                        message.getSender().equals(clientConnection.receiverId))
-//                        &&message.getReceiver().equals(clientConnection.getLoggedUserID()))
-//                .forEach(clientConnection -> clientConnection
-//                        .sendCommand(command)))
-//                .start();
-            clientConnections.stream().filter(clientConnection -> message.getReceiver().equals(clientConnection.getLoggedUserID()) && message.getSender().equals(clientConnection.receiverId)).forEach(clientConnection -> {
-                clientConnection.sendCommand(command);
-            });
-        }).start();
+        new Thread(() -> clientConnections.stream().filter(clientConnection -> message.getReceiver().equals(clientConnection.getLoggedUserID()) && message.getSender().equals(clientConnection.receiverId)).forEach(clientConnection -> {
+            clientConnection.sendCommand(command);
+        })).start();
     }
 
 }

@@ -8,9 +8,9 @@ import java.util.List;
 /**
  * Created by kemo on 04/12/2016.
  */
-public class SocialArrayList {
-    private List<Object> items;
-    public SocialArrayList(List<Object> items)
+public class SocialArrayList implements Shareable {   // update it latter
+    private List<String> items;
+    public SocialArrayList(List<String> items)
     {
         this.items = items;
     }
@@ -23,17 +23,17 @@ public class SocialArrayList {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
-    public static SocialArrayList convertFromJsonString(String jsonStr)
+    public static SocialArrayList fromJsonString(String jsonStr)
     {
         Gson gson = new Gson();
         return gson.fromJson(jsonStr, SocialArrayList.class);
     }
 
-    public List<Object> getItems() {
+    public List<String> getItems() {
         return items;
     }
 
-    public void setItems(List<Object> items) {
+    public void setItems(List<String> items) {
         this.items = items;
     }
 

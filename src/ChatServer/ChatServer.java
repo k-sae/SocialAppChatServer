@@ -1,5 +1,6 @@
 package ChatServer;
 
+import FileManagment.FilesManager;
 import SocialServer.ServerInitializer;
 
 import javax.swing.*;
@@ -22,6 +23,7 @@ public class ChatServer extends JFrame {
         final int startport = 6020;
         final int secondaryStartPort = 6030;
 //        clientConnections = new ArrayList<ClientConnection>();
+        initialize();
         new ChatServer();
         new Thread(() -> new ServerInitializer(secondaryStartPort) {
             @Override
@@ -35,5 +37,11 @@ public class ChatServer extends JFrame {
                 new ClientConnection(client);
             }
         };
+    }
+    private static void initialize()
+    {
+        FilesManager.CreateFolder(Files.DATA);
+       FilesManager.CreateFolder(Files.USERS_CHAT_DATA);
+        FilesManager.CreateFolder(Files.USERS_HISTORY);
     }
 }

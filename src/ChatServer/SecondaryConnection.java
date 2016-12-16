@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 class SecondaryConnection extends GeneralServer {
      private static ArrayList<SecondaryConnection> secondaryConnections;
-    public SecondaryConnection(Socket clientSocket) {
+    SecondaryConnection(Socket clientSocket) {
         super(clientSocket);
         if (secondaryConnections ==null)
         secondaryConnections = new ArrayList<SecondaryConnection>();
@@ -38,12 +38,10 @@ class SecondaryConnection extends GeneralServer {
     }
     private void sendChatHistory()
     {
-        Command command = new Command();
-        command.setKeyWord(Message.FETCH_MESSAGES);
-        command.setSharableObject(ServerManager.fetchMessages(getLoggedUserID()));
-        sendCommand(command);
+
+        sendCommand(ServerManager.getHistory(getLoggedUserID()));
     }
-    public static void sendNotification(String senderId, String ReceiverId)
+    static void sendNotification(String senderId, String ReceiverId)
     {
         Command command  = new Command();
         command.setKeyWord(Message.NEW_NOTIFICATION);
