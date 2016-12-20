@@ -1,7 +1,7 @@
 package ChatServer;
 
 import FileManagment.FilesManager;
-import SocialServer.ServerInitializer;
+import SocialSecondaryServer.ServerInitializer;
 
 import javax.swing.*;
 import java.net.Socket;

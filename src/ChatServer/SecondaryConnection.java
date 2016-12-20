@@ -2,7 +2,7 @@ package ChatServer;
 
 import SocialAppGeneral.Command;
 import SocialAppGeneral.Message;
-import SocialServer.GeneralServer;
+import SocialSecondaryServer.GeneralServer;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

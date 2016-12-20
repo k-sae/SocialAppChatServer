@@ -1,4 +1,4 @@
-package SocialServer;
+package SocialSecondaryServer;
 
 import SocialAppGeneral.Command;
 

@@ -2,7 +2,7 @@ package ChatServer;
 
 import SocialAppGeneral.Command;
 import SocialAppGeneral.Message;
-import SocialServer.GeneralServer;
+import SocialSecondaryServer.GeneralServer;
 
 import java.net.Socket;
 import java.util.ArrayList;
@@ -12,8 +12,8 @@ import java.util.ArrayList;
  */
 class ClientConnection extends GeneralServer
 {
-    private String receiverId;
-    private static ArrayList<ClientConnection> clientConnections;
+        private String receiverId;
+        private static ArrayList<ClientConnection> clientConnections;
     ClientConnection(Socket clientSocket) {
         super(clientSocket);
         if (clientConnections==null)
