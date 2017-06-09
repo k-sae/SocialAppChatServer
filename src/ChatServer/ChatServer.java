@@ -29,12 +29,14 @@ public class ChatServer extends JFrame {
             @Override
             public void onClientConnection(Socket client) {
                 new SecondaryConnection(client);
+                System.out.println("client connected");
             }
         }).start();
         new ServerInitializer(startport) {
             @Override
             public void onClientConnection(Socket client) {
                 new ClientConnection(client);
+                System.out.println("client2 connected");
             }
         };
     }

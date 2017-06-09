@@ -19,6 +19,7 @@ class ReceiveClientCommand extends ReceiveCommand {
     public void Analyze(Command command) {
         if (command.getKeyWord().equals(Message.SEND_MESSAGE))
         {
+            System.out.println("Message :)");
             ServerManager.processMessage( Message.FromJson(command.getObjectStr()));
         }
     }

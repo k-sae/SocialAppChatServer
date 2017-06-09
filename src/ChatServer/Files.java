@@ -5,7 +5,7 @@ package ChatServer;
  */
 public interface Files {
     String DATA = "data";
-    String USERS_HISTORY = "data\\history\\";
-    String USERS_CHAT_DATA = "data\\chat\\";
+    String USERS_HISTORY = "data/history/";
+    String USERS_CHAT_DATA = "data/chat/";
 }
 

@@ -15,9 +15,15 @@ import java.util.ArrayList;
  */
 public class FilesManager {
 
-    public static File CreateFolder(String FolderName) {
-        File Folder = new File(FolderName);
-        return Folder.mkdir() ? Folder : null;
+    public static void CreateFolder(String FolderName) {
+        String[] nestedFolders = FolderName.split("\\\\");
+        String nextFolderLocation = "";
+        for (int i = 0; i < nestedFolders.length; i++) {
+            File Folder = new File(nextFolderLocation + nestedFolders[i]);
+            //noinspection ResultOfMethodCallIgnored
+            Folder.mkdir();
+            nextFolderLocation += nestedFolders[i] + "/";
+        }
     }
 
     public static File CreateFolder(String ExistedFolderName, String NewFolderName) {
@@ -26,16 +32,20 @@ public class FilesManager {
     }
 
     public static File CreateFile(String FileName) {
+        FileName = toLinuxPath(FileName);
         File file = new File(FileName);
         return file;
     }
 
     public static File CreateFile(String FolderName, String FileName) {
+        FileName = toLinuxPath(FileName);
+        FolderName = toLinuxPath(FolderName);
         File file = new File(FolderName, FileName);
         return file;
     }
 
     public static BufferedWriter OpenToWrite(String FileName) {
+        FileName = toLinuxPath(FileName);
         try {
             FileWriter fileWriter = new FileWriter(FileName);
             BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
@@ -58,6 +68,8 @@ public class FilesManager {
     }
 
     public static BufferedWriter OpenToWrite(String FolderName, String FileName) {
+        FileName = toLinuxPath(FileName);
+        FolderName = toLinuxPath(FolderName);
         try {
             File file = new File(FolderName, FileName);
             FileWriter fileWriter = new FileWriter(file);
@@ -91,7 +103,8 @@ public class FilesManager {
     }
 
     //belal
-    public static synchronized Boolean AddLine(String FileName, String text) {
+    public static Boolean AddLine(String FileName, String text) {
+        FileName = toLinuxPath(FileName);
         try {
             BufferedWriter WT = new BufferedWriter(new FileWriter(FileName,true));
             WT.write(text);
@@ -104,6 +117,7 @@ public class FilesManager {
        }
     }
     public static Boolean AddLineWithoutAppend(String FileName, String text) {
+        FileName = toLinuxPath(FileName);
         try {
             BufferedWriter WT = new BufferedWriter(new FileWriter(FileName));
             WT.write(text);
@@ -116,6 +130,7 @@ public class FilesManager {
         }
     }
     public static Boolean AddLineWithoutAppend(ArrayList<String> a, String FileName) {
+        FileName = toLinuxPath(FileName);
         try {
             BufferedWriter WT = new BufferedWriter(new FileWriter(FileName));
             for (String S:a){
@@ -130,11 +145,12 @@ public class FilesManager {
         }
     }
     public static boolean StringFinder(String FileName, String token) {
+        FileName = toLinuxPath(FileName);
         try {
             BufferedReader RL = new BufferedReader(new FileReader(FileName));
             String line;
             while ((line = RL.readLine()) != null) {
-                if (line.contains(token)) {
+                if (line.equals(token)) {
                     RL.close();
                     return true;
                 }
@@ -145,8 +161,8 @@ public class FilesManager {
             return false;
         }
     }
-
     public static String ReadLine(String FileName, int lineNum) {
+        FileName = toLinuxPath(FileName);
         try {
             BufferedReader RL = new BufferedReader(new FileReader(FileName));
             String line;
@@ -166,6 +182,7 @@ public class FilesManager {
         }
     }
     public static Boolean searcher(String FileName,String id) {
+        FileName = toLinuxPath(FileName);
         try {
             BufferedReader RL = new BufferedReader(new FileReader(FileName));
             String line;
@@ -182,94 +199,26 @@ public class FilesManager {
             return false;
         }
     }
-//    public static boolean ReadLine(String FileName, String token) {
-//        try {
-//            BufferedReader RL = new BufferedReader(new FileReader(FileName));
-//            RegisterInfo re;
-//            Gson gson = new Gson();
-//            String line ;
-//            while ((line = RL.readLine()) != null) {
-////                line=line.substring(line.indexOf('{'),line.indexOf('}')+1);
-//                System.out.print(line);
-//                if(!line.isEmpty()) {
-//                  re = gson.fromJson(line, RegisterInfo.class);
-//                    if (re.getLoginInfo().getEMAIL().equals(token)) {
-//                        RL.close();
-//                        return true;
-//                    }
-//                }
-//            }
-//            RL.close();
-//            return false;
-//        } catch (IOException ex) {
-//            return false;
-//        }
-//    }
-//    public static boolean ReadLineoflogin(String FileName, String token) {
-//        try {
-//            BufferedReader RL = new BufferedReader(new FileReader(FileName));
-//            LoginInfo re;
-//            Gson gson = new Gson();
-//            String line ;
-//            while ((line = RL.readLine()) != null) {
-//                line=line.substring(line.indexOf('{'),line.indexOf('}')+1);
-//              //  System.out.print(line);
-//                if(!line.isEmpty()) {
-//                    re = gson.fromJson(line, LoginInfo.class);
-//                    if (re.getEMAIL().equals(token)) {
-//                        RL.close();
-//                        return true;
-//                    }
-//                }
-//            }
-//            RL.close();
-//            return false;
-//        } catch (IOException ex) {
-//            return false;
-//        }
-//    }
-//    public static String FileSearcherForID(String FileName, String token) {
-//        try {
-//            BufferedReader RL = new BufferedReader(new FileReader(FileName));
-//            LoginInfo re;
-//            Gson gson = new Gson();
-//            String line;
-//            String Wline;
-//            while ((Wline = RL.readLine()) != null) {
-//                line=Wline;
-//                line=line.substring(line.indexOf('{'),line.indexOf('}')+1);
-//               re = gson.fromJson(line,LoginInfo.class);
-//                if (re.getEMAIL().equals(token)) {
-//                    RL.close();
-//                    return Wline;
-//                }
-//            }
-//            RL.close();
-//            return "";
-//        } catch (IOException ex) {
-//            return null;
-//        }
-//    }
-//    public static String FileSearcher(String FileName, String token) {
-//        try {
-//            BufferedReader RL = new BufferedReader(new FileReader(FileName));
-//            RegisterInfo re;
-//            Gson gson = new Gson();
-//            String line;
-//            while ((line = RL.readLine()) != null) {
-//           //    line=line.substring(line.indexOf('{'),line.indexOf('}')+1);
-//                re = gson.fromJson(line,RegisterInfo.class);
-//                if (re.getLoginInfo().getEMAIL().equals(token)) {
-//                    RL.close();
-//                    return line;
-//                }
-//            }
-//            RL.close();
-//            return "";
-//        } catch (IOException ex) {
-//            return null;
-//        }
-//    }
+    //Change name later
+    public static boolean ReadBanned(String FileName, String token) {
+        FileName = toLinuxPath(FileName);
+        try {
+            BufferedReader RL = new BufferedReader(new FileReader(FileName));
+            String line ;
+            while ((line = RL.readLine()) != null) {
+                if(!line.isEmpty()) {
+                    if (line.equals(token)) {
+                        RL.close();
+                        return true;
+                    }
+                }
+            }
+            RL.close();
+            return false;
+        } catch (IOException ex) {
+            return false;
+        }
+    }
     public static void DeleteFile(File file) {
         final boolean Temp = file.delete();
     }
@@ -280,8 +229,10 @@ public class FilesManager {
 
 
     public static synchronized void RemoveLine(String FilePath,String token){
+        BufferedReader RL = null;
+        FilePath = toLinuxPath(FilePath);
       try {
-      BufferedReader RL=new BufferedReader(new FileReader(FilePath));
+       RL=new BufferedReader(new FileReader(FilePath));
       String Line;
           ArrayList <String> a =new ArrayList<String>();
           while((Line= RL.readLine())!=null) {
@@ -289,13 +240,18 @@ public class FilesManager {
                   a.add(Line);
               }
           }
-          RL.close();
           AddLineWithoutAppend(a,FilePath);
 
       }catch (IOException ignored){
+
+      }
+      if (RL != null) try {
+          RL.close();
+      } catch (IOException ignored) {
       }
     }
     public static ArrayList<String> ReadIntoArrayList(String FilePath){
+        FilePath = toLinuxPath(FilePath);
         ArrayList <String> a =new ArrayList<String>();
         try {
             BufferedReader RL=new BufferedReader(new FileReader(FilePath));
@@ -309,7 +265,32 @@ public class FilesManager {
         }
         return a;
     }
+    public static ArrayList<String> ReadArrayList(String FilePath){
+        FilePath = toLinuxPath(FilePath);
+        ArrayList <String> a =new ArrayList<String>();
+        try {
+            BufferedReader RL=new BufferedReader(new FileReader(FilePath));
+            String Line;
+            while((Line= RL.readLine())!=null) {
+                a.add(Line);
+            }
+            return a;
+        }catch (IOException ex){
+        }
+        return a;
+    }
+    public static ArrayList<String > FoldderSearcher(String FilePath){
+        FilePath = toLinuxPath(FilePath);
+        ArrayList<String> a=new ArrayList<>();
+        File folder = new File(FilePath);
+        File[] listOfFiles = folder.listFiles();
+        for (File file : listOfFiles) {
+          a.add(file.getName());
+        }
+        return a;
+    }
     public static synchronized void Removefile(String FilePath,String info){
+        FilePath = toLinuxPath(FilePath);
         try {
 
             File inputFile = new File(FilePath);
@@ -350,11 +331,14 @@ public class FilesManager {
     }
 
     public static boolean FileIsExist(String FolderName, String FileName) {
+        FolderName = toLinuxPath(FolderName);
+        FileName = toLinuxPath(FileName);
         File file = new File(FolderName, FileName);
         return file.exists();
     }
 
     public static boolean WriteOnTop(String FileName, String Line) {
+        FileName = toLinuxPath(FileName);
         try {
             // el function el gahza bel list
 
@@ -388,6 +372,7 @@ public class FilesManager {
     }
 
     public static boolean WriteOnTop(String FileName, String Line, int lineNum) {
+        FileName = toLinuxPath(FileName);
         try {
             BufferedReader BR = new BufferedReader(new FileReader(FileName));
 
@@ -419,10 +404,13 @@ public class FilesManager {
     }
 
     public static boolean FileIsExist(String FileName) {
+        FileName = toLinuxPath(FileName);
         File file = new File(FileName);
         return file.exists();
     }
     public static void CreateFileBinary(Object object,String path){
+        CreateFolder(path.substring(0,path.lastIndexOf("\\")));
+        path = toLinuxPath(path);
         try{
 
             FileOutputStream fos = new FileOutputStream(path);
@@ -442,6 +430,7 @@ public class FilesManager {
     }
     public  static  Object ReadFromBinaryFile(String path){
         Object o = null;
+        path = toLinuxPath(path);
         try{
             FileInputStream foss=new FileInputStream(path);
             ObjectInputStream ooss=new ObjectInputStream(foss);
@@ -455,42 +444,27 @@ public class FilesManager {
         return o;
 
     }
-//    public static boolean LoginValidatior(String FileName, String mail, String pass) {
-//        try {
-//            BufferedReader RL = new BufferedReader(new FileReader(FileName));
-//            String line;
-//            LoginInfo loginInfo;
-//            Gson gson = new Gson();
-//           while( (line = RL.readLine()) != null) {
-//            line=line.substring(line.indexOf('{'),line.indexOf('}')+1);
-//               loginInfo = gson.fromJson(line,LoginInfo.class);
-//                if (loginInfo.getEMAIL().equals(mail) && loginInfo.getPassword().equals(pass)) {
-//                    return true;
-//                }
-//            }
-//            RL.close();
-//            return false;
-//        } catch (IOException ex) {
-//            return false;
-//        }
-//    }
     public static ArrayList<String> readAllLines(String file) {
         ArrayList<String> strings = new ArrayList<>();
+        file = toLinuxPath(file);
+        BufferedReader bufferedReader = null;
         try {
 
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+             bufferedReader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 strings.add(line);
             }
 
         } catch (IOException ignored) {
-
+        }
+        if (bufferedReader != null) try {
+            bufferedReader.close();
+        } catch (IOException e) {
         }
         return strings;
     }
-    public  static  void delete(File file){
-
+    private   static  void deleteFolder(File file){
         if(file.isDirectory()){
             //directory is empty, then delete it
             if(file.list().length==0){
@@ -502,10 +476,11 @@ public class FilesManager {
 
                 for (String temp : files) {
                     //construct the file structure
+                    temp = toLinuxPath(temp);
                     File fileDelete = new File(file, temp);
 
                     //recursive delete
-                    delete(fileDelete);
+                    deleteFolder(fileDelete);
                 }
                 //check the directory again, if empty then delete it
                 if(file.list().length==0){
@@ -520,7 +495,14 @@ public class FilesManager {
 
         }
     }
-
-
+    public static void delete(String path){
+        path = toLinuxPath(path);
+        File file =new File (path);
+        deleteFolder(file);
+    }
+    public static String toLinuxPath(String path)
+    {
+       return path.replace("\\","/" );
+    }
 }
 
